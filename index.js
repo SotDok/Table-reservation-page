@@ -1,4 +1,5 @@
 const body = document.querySelector("body");
+body.style.cssText = "display: flex; justify-content: center; align-items: center; height: 100vh; background-color: #f0f0f0; width: 50%; margin: 0 auto; height: 50%;";
 
 
 const container = document.createElement("div");
@@ -11,6 +12,10 @@ container.style.cssText = `
   gap: 20px; 
   margin-top: 50px;
   width: 80%;
+  background-color: #b9ddfb;
+  padding: 40px;
+  justify-content: center;
+  border-radius: 10px;
 `;
 body.appendChild(container);
 
@@ -18,7 +23,7 @@ body.appendChild(container);
 const h1 = document.createElement("h1");
 h1.textContent = "Restaurant ESTIA";
 container.appendChild(h1);
-h1.style.cssText = "font-size: 36px; background-color: #f0f0f068; color: #333; margin-bottom: 20px; font-family: 'Arial', sans-serif; text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);";
+h1.style.cssText = "font-size: 36px; color: #333; margin-bottom: 20px; font-family: 'Arial', sans-serif; text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);";
 
 const panels = document.createElement('div');
 panels.style.cssText =  `
@@ -39,6 +44,8 @@ availableTablesDiv.style.cssText = `
   display: flex;
   flex-direction: column;
   gap: 10px;
+  text-align: center;
+  font-size: 30px;
 `;
 
 
@@ -52,6 +59,8 @@ yourDesiredTable.style.cssText =  `
   display: flex;
   flex-direction: column;
   gap: 10px;
+  font-size: 30px;
+  text-align: center;
 `;
 
 panels.appendChild(availableTablesDiv);
@@ -116,8 +125,9 @@ function renderTables(table){
 
             cancelBtn.addEventListener('click', () => {
                 tableBtn.style.cssText = "background-color: green; color: white; padding: 20px 30px; border: none; border-radius: 5px; cursor: pointer;";
-                selectedTableButton = null;
+                yourDesiredTable.removeChild(cancelBtn);
                 yourDesiredTable.textContent = "Your Table is: "; 
+                alert(`NA PAS STIN TAVERNA PSISTARIA TA 3 POUSTARIA`);
             });
         }
     });    
