@@ -1,10 +1,18 @@
 const body = document.querySelector("body");
-body.style.cssText = "display: flex; justify-content: center; align-items: center; height: 100vh; background-color: #e0e0e0; margin: 0; font-family: 'Arial', sans-serif;";
+
 
 const container = document.createElement("div");
 container.id = "container";
+
+container.style.cssText = `
+  display: flex; 
+  flex-direction: column; 
+  align-items: center; 
+  gap: 20px; 
+  margin-top: 50px;
+  width: 80%;
+`;
 body.appendChild(container);
-container.style.cssText = "display: flex; flex-direction: column;    align-items: center; gap: 20px; margin-top: 50px";
 
 //Our title of the restaurant
 const h1 = document.createElement("h1");
@@ -12,22 +20,43 @@ h1.textContent = "Restaurant ESTIA";
 container.appendChild(h1);
 h1.style.cssText = "font-size: 36px; background-color: #f0f0f068; color: #333; margin-bottom: 20px; font-family: 'Arial', sans-serif; text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);";
 
+const panels = document.createElement('div');
+panels.style.cssText =  `
+  display: flex; 
+  gap: 30px; 
+  width: 100%; 
+  justify-content: space-between;
+`;
+
+container.appendChild(panels);
 
 //Our form to reserve a table
 const availableTablesDiv = document.createElement('div');
 availableTablesDiv.id = 'available-tables';
 availableTablesDiv.textContent = 'Available Tables for tonight:'
-availableTablesDiv.style.cssText = "display: flex; flex-wrap: wrap; gap: 10px; justify-content: space-between; background-color: #f0f0f068; padding: 20px; border-radius: 10px;";
+availableTablesDiv.style.cssText = `
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+`;
 
 
-container.appendChild(availableTablesDiv);
+
 
 const yourDesiredTable = document.createElement('div');
 yourDesiredTable.id = 'desired-table';
 yourDesiredTable.textContent = "Your Table is: "
-container.appendChild(yourDesiredTable)
-yourDesiredTable.style.cssText = "background-color: #f0f0f068; padding: 10px; border-radius: 5px; font-weight: bold;"
+yourDesiredTable.style.cssText =  `
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+`;
 
+panels.appendChild(availableTablesDiv);
+panels.appendChild(yourDesiredTable)
+container.appendChild(panels);
 
 //Available tables
 const tables = [
@@ -43,46 +72,60 @@ const tables = [
     { id: 10, seats: 20, available: true }
 ]
 
+let selectedTableButton = null;
+
 function renderTables(table){
     
     const tableBtn = document.createElement('button');
     tableBtn.style.cssText = "background-color: green; color: white; padding: 20px 30px; border: none; border-radius: 5px; cursor: pointer;";
     tableBtn.textContent = `Table: ${table.id} - Seats: ${table.seats}`;
-    availableTablesDiv.appendChild(tableBtn);
-    console.log(table);
 
+    //Add option to select time for the table
+    
 
-    //Event listener to select button and move it to the desired table section only if it's available, and change the color of the button to red, and make it unavailable (can select only one table at a time)
     tableBtn.addEventListener('click', () => {
-        if(table.available){
-            table.available = false;
-            tableBtn.style.backgroundColor = 'red';
-            yourDesiredTable.textContent = `Your Table is: Table ${table.id} with ${table.seats} seats.`
+        if (selectedTableButton && selectedTableButton !== tableBtn) {
+            selectedTableButton.style.cssText = "background-color: green; color: white; padding: 20px 30px; border: none; border-radius: 5px; cursor: pointer;";
+            
+        } 
+
+        if (selectedTableButton === tableBtn) {
+            tableBtn.style.cssText = "background-color: green; color: white; padding: 20px 30px; border: none; border-radius: 5px; cursor: pointer;";
+            selectedTableButton = null;
+            yourDesiredTable.textContent = "Your Table is: ";         
+            
         } else {
-            table.available = true;
-            tableBtn.style.backgroundColor = 'green';
-            yourDesiredTable.textContent = "Your Table is: "
+            tableBtn.style.cssText = "background-color: orange; color: white; padding: 20px 30px; border: none; border-radius: 5px; cursor: pointer;";
+            selectedTableButton = tableBtn;
+            
+            //Make the content of desired table like a card with the table id and seats
+            yourDesiredTable.style.cssText = `display: flex; align-items: center; justify-content: center; text-size: 25px
+            ; background-color: #b2b4c387; color: #333; padding: 20px; border-radius: 5px;
+             font-family: 'Arial', sans-serif; text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1); text-align: center; font-size: 18px;`;
+            yourDesiredTable.textContent = `Your Table is: Table ${table.id} with ${table.seats} seats. We are waiting you at ESTIA! `;
+       
+          
         }
-    })
-} 
 
-const selectedTable = [];
+        if (yourDesiredTable) {
+            // Have a cancel reservation button under the desired table card
+            const cancelBtn = document.createElement('button');
+            cancelBtn.textContent = "Cancel Reservation";
+            cancelBtn.style.cssText = "background-color: red; color: white; margin-left: 20px; padding: 10px 20px; border: none; border-radius: 5px; cursor: pointer; margin-top: 10px;";
+            yourDesiredTable.appendChild(cancelBtn);
 
-//FUnction to select table only if available (but can select only one table at a time)
-function selectTable(table){
-    if(table.available){
-        table.available = false;
-        selectedTable.push(table);
-        yourDesiredTable.textContent = `Your Table is: Table ${table.id} with ${table.seats} seats.`
-    } else {
-        table.available = true;
-        const index = selectedTable.indexOf(table);
-        if(index !== -1){
-            selectedTable.splice(index, 1);
-        }  
-        yourDesiredTable.textContent = "Your Table is: "
-    }
+            cancelBtn.addEventListener('click', () => {
+                tableBtn.style.cssText = "background-color: green; color: white; padding: 20px 30px; border: none; border-radius: 5px; cursor: pointer;";
+                selectedTableButton = null;
+                yourDesiredTable.textContent = "Your Table is: "; 
+            });
+        }
+    });    
+
+    availableTablesDiv.appendChild(tableBtn);
 }
+
+
 tables.forEach(renderTables);
 
 
