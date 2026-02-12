@@ -1,27 +1,33 @@
 const body = document.querySelector("body");
+body.style.cssText = "display: flex; justify-content: center; align-items: center; height: 100vh; background-color: #e0e0e0; margin: 0; font-family: 'Arial', sans-serif;";
 
 const container = document.createElement("div");
 container.id = "container";
 body.appendChild(container);
-container.style.cssText = "  margin: 0 auto; padding: 20px; background-color: #f9f9f9; border-radius: 8px; box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);";
-
+container.style.cssText = "display: flex; flex-direction: column;    align-items: center; gap: 20px; margin-top: 50px";
 
 //Our title of the restaurant
 const h1 = document.createElement("h1");
 h1.textContent = "Restaurant ESTIA";
-h1.style.cssText = "text-align: center; color: #333; font-family: Arial, sans-serif; margin-top: 20px;";
 container.appendChild(h1);
+h1.style.cssText = "font-size: 36px; background-color: #f0f0f068; color: #333; margin-bottom: 20px; font-family: 'Arial', sans-serif; text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);";
+
 
 //Our form to reserve a table
 const availableTablesDiv = document.createElement('div');
 availableTablesDiv.id = 'available-tables';
-availableTablesDiv.style.cssText = "margin-top: 20px; padding: 10px; background-color: #e0f7fa; border-radius: 8px;";
+availableTablesDiv.textContent = 'Available Tables for tonight:'
+availableTablesDiv.style.cssText = "display: flex; flex-wrap: wrap; gap: 10px; justify-content: space-between; background-color: #f0f0f068; padding: 20px; border-radius: 10px;";
+
+
 container.appendChild(availableTablesDiv);
 
 const yourDesiredTable = document.createElement('div');
 yourDesiredTable.id = 'desired-table';
 yourDesiredTable.textContent = "Your Table is: "
-yourDesiredTable.style.cssText = "margin-top: 20px; padding: 10px; background-color: #111111; border-radius: 8px;"
+container.appendChild(yourDesiredTable)
+yourDesiredTable.style.cssText = "background-color: #f0f0f068; padding: 10px; border-radius: 5px; font-weight: bold;"
+
 
 //Available tables
 const tables = [
@@ -37,18 +43,48 @@ const tables = [
     { id: 10, seats: 20, available: true }
 ]
 
-const updateAvailableTables = () => {
-    for (let i = 0; i < tables.length; i++){
-        const tableBtn = document.createElement('button');
-        tableBtn.textContent = `${tables.id} /n Seats: ${tables.seats}`;
-        tableBtn.style.cssText = "color: green; border: 1px solid black;"
+function renderTables(table){
+    
+    const tableBtn = document.createElement('button');
+    tableBtn.style.cssText = "background-color: green; color: white; padding: 20px 30px; border: none; border-radius: 5px; cursor: pointer;";
+    tableBtn.textContent = `Table: ${table.id} - Seats: ${table.seats}`;
+    availableTablesDiv.appendChild(tableBtn);
+    console.log(table);
 
-        if (tables[i].available) {
-            tableBtn.style.cssText = "color: green";
+
+    //Event listener to select button and move it to the desired table section only if it's available, and change the color of the button to red, and make it unavailable (can select only one table at a time)
+    tableBtn.addEventListener('click', () => {
+        if(table.available){
+            table.available = false;
+            tableBtn.style.backgroundColor = 'red';
+            yourDesiredTable.textContent = `Your Table is: Table ${table.id} with ${table.seats} seats.`
         } else {
-            tableBtn.disabled = true;
+            table.available = true;
+            tableBtn.style.backgroundColor = 'green';
+            yourDesiredTable.textContent = "Your Table is: "
         }
+    })
+} 
 
-        availableTablesDiv.appendChild(tableBtn);
+const selectedTable = [];
+
+//FUnction to select table only if available (but can select only one table at a time)
+function selectTable(table){
+    if(table.available){
+        table.available = false;
+        selectedTable.push(table);
+        yourDesiredTable.textContent = `Your Table is: Table ${table.id} with ${table.seats} seats.`
+    } else {
+        table.available = true;
+        const index = selectedTable.indexOf(table);
+        if(index !== -1){
+            selectedTable.splice(index, 1);
+        }  
+        yourDesiredTable.textContent = "Your Table is: "
     }
 }
+tables.forEach(renderTables);
+
+
+
+
