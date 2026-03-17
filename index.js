@@ -1,5 +1,14 @@
 const body = document.querySelector("body");
-body.style.cssText = "display: flex; justify-content: center; align-items: center; height: 100vh; background-color: #f0f0f0; width: 50%; margin: 0 auto; height: 50%;";
+body.style.cssText = `
+  display: flex; 
+  justify-content: center; 
+  align-items: flex-start; 
+  min-height: 100vh; 
+  background-color: #f0f0f0; 
+  margin: 0; 
+  padding: 20px;
+  font-family: 'Arial', sans-serif;
+`;
 
 
 const container = document.createElement("div");
@@ -10,12 +19,13 @@ container.style.cssText = `
   flex-direction: column; 
   align-items: center; 
   gap: 20px; 
-  margin-top: 50px;
-  width: 80%;
+  width: 100%;
+  max-width: 900px;
   background-color: #b9ddfb;
-  padding: 40px;
-  justify-content: center;
-  border-radius: 10px;
+  padding: 30px;
+  justify-content: flex-start;
+  border-radius: 15px;
+  box-shadow: 0 8px 20px rgba(0,0,0,0.1);
 `;
 body.appendChild(container);
 
@@ -23,14 +33,20 @@ body.appendChild(container);
 const h1 = document.createElement("h1");
 h1.textContent = "Restaurant ESTIA";
 container.appendChild(h1);
-h1.style.cssText = "font-size: 36px; color: #333; margin-bottom: 20px; font-family: 'Arial', sans-serif; text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);";
+h1.style.cssText = `
+  font-size: 36px; 
+  color: #333; 
+  margin-bottom: 10px; 
+  text-shadow: 1px 1px 3px rgba(0,0,0,0.1);
+`;
 
 const panels = document.createElement('div');
 panels.style.cssText =  `
   display: flex; 
-  gap: 30px; 
+  gap: 20px; 
   width: 100%; 
   justify-content: space-between;
+  flex-wrap: wrap;
 `;
 
 container.appendChild(panels);
@@ -42,10 +58,12 @@ availableTablesDiv.textContent = 'Available Tables for tonight:'
 availableTablesDiv.style.cssText = `
   flex: 1;
   display: flex;
-  flex-direction: column;
-  gap: 10px;
+  flex-wrap: wrap;
+  gap: 15px;
   text-align: center;
-  font-size: 30px;
+  font-size: 22px;
+  justify-content: center;
+  padding: 10px;
 `;
 
 
@@ -54,14 +72,25 @@ availableTablesDiv.style.cssText = `
 const yourDesiredTable = document.createElement('div');
 yourDesiredTable.id = 'desired-table';
 yourDesiredTable.textContent = "Your Table is: "
-yourDesiredTable.style.cssText =  `
+yourDesiredTable.style.cssText = `
   flex: 1;
+  min-width: 250px;
   display: flex;
   flex-direction: column;
-  gap: 10px;
-  font-size: 30px;
+  align-items: center;
+  gap: 15px;
   text-align: center;
+  background: linear-gradient(135deg, #ec9c67, #ffaaa5);
+  color: #333;
+  padding: 25px 20px;
+  border-radius: 15px;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+  font-family: 'Arial', sans-serif;
+  font-size: 18px;
+  transition: transform 0.2s, box-shadow 0.2s;
 `;
+
+
 
 panels.appendChild(availableTablesDiv);
 panels.appendChild(yourDesiredTable)
@@ -86,7 +115,17 @@ let selectedTableButton = null;
 function renderTables(table){
     
     const tableBtn = document.createElement('button');
-    tableBtn.style.cssText = "background-color: green; color: white; padding: 20px 30px; border: none; border-radius: 5px; cursor: pointer;";
+    tableBtn.style.cssText = `
+      background-color: #4CAF50; 
+      color: white; 
+      padding: 15px 25px; 
+      border: none; 
+      border-radius: 8px; 
+      cursor: pointer;
+      font-size: 16px;
+      flex: 1 1 150px;
+      transition: 0.2s;
+    `;
     tableBtn.textContent = `Table: ${table.id} - Seats: ${table.seats}`;
 
     //Add option to select time for the table
@@ -94,43 +133,35 @@ function renderTables(table){
 
     tableBtn.addEventListener('click', () => {
         if (selectedTableButton && selectedTableButton !== tableBtn) {
-            selectedTableButton.style.cssText = "background-color: green; color: white; padding: 20px 30px; border: none; border-radius: 5px; cursor: pointer;";
-            
+            selectedTableButton.style.backgroundColor = '#4CAF50';
         } 
 
         if (selectedTableButton === tableBtn) {
-            tableBtn.style.cssText = "background-color: green; color: white; padding: 20px 30px; border: none; border-radius: 5px; cursor: pointer;";
+            tableBtn.style.backgroundColor = '#4CAF50';
             selectedTableButton = null;
             yourDesiredTable.textContent = "Your Table is: ";         
-            
         } else {
-            tableBtn.style.cssText = "background-color: orange; color: white; padding: 20px 30px; border: none; border-radius: 5px; cursor: pointer;";
+            tableBtn.style.backgroundColor = '#FF9800';
             selectedTableButton = tableBtn;
-            
-            //Make the content of desired table like a card with the table id and seats
-            yourDesiredTable.style.cssText = `display: flex; align-items: center; justify-content: center; text-size: 25px
-            ; background-color: #b2b4c387; color: #333; padding: 20px; border-radius: 5px;
-             font-family: 'Arial', sans-serif; text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1); text-align: center; font-size: 18px;`;
-            yourDesiredTable.textContent = `Your Table is: Table ${table.id} with ${table.seats} seats. We are waiting you at ESTIA! `;
-       
-          
-        }
+            yourDesiredTable.textContent = `Your Table is: Table ${table.id} with ${table.seats} seats. We are waiting you at ESTIA!`;
 
-        if (yourDesiredTable) {
-            // Have a cancel reservation button under the desired table card
-            const cancelBtn = document.createElement('button');
-            cancelBtn.textContent = "Cancel Reservation";
-            cancelBtn.style.cssText = "background-color: red; color: white; margin-left: 20px; padding: 10px 20px; border: none; border-radius: 5px; cursor: pointer; margin-top: 10px;";
-            yourDesiredTable.appendChild(cancelBtn);
+            // Cancel button
+            yourDesiredTable.innerHTML = `
+                Your Table is: Table ${table.id} with ${table.seats} seats. See you soon<br>
+                <button id="cancelBtn" style="
+                    background-color: red; color: white; padding: 10px 20px; border: none; border-radius: 5px; 
+                    cursor: pointer; margin-top: 15px;
+                ">Cancel Reservation</button>
+            `;
 
-            cancelBtn.addEventListener('click', () => {
-                tableBtn.style.cssText = "background-color: green; color: white; padding: 20px 30px; border: none; border-radius: 5px; cursor: pointer;";
-                yourDesiredTable.removeChild(cancelBtn);
+            document.getElementById('cancelBtn').addEventListener('click', () => {
+                tableBtn.style.backgroundColor = '#4CAF50';
                 yourDesiredTable.textContent = "Your Table is: "; 
-                alert(`NA PAS STIN TAVERNA PSISTARIA TA 3 POUSTARIA`);
+                selectedTableButton = null;
             });
         }
     });    
+
 
     availableTablesDiv.appendChild(tableBtn);
 }
