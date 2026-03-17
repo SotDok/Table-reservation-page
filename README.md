@@ -18,4 +18,7 @@ This project is a small exercise built using vanilla JavaScript and the DOM only
 ### Tech used
 - JavaScript
 - DOM API
-- Basic CSS
+- CSS done via DOM
+
+
+<img width="1386" height="767" alt="image" src="https://github.com/user-attachments/assets/71fe1ee1-5a52-4ff9-9e22-19f56e5a2539" />
